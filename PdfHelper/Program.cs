@@ -1,12 +1,26 @@
-﻿namespace PdfHelper;
+﻿using Newtonsoft.Json;
+using PdfHelper.Contracts;
+using PdfHelper.Models;
+using PdfHelper.Services;
+
+namespace PdfHelper;
 
 public class Program
 {
-    static void Main(string[] args)
+    public static void Main(string[] args)
     {
-        if (args == null || args.Length == 0)
+        IpdfServices pdfServices = new PdfService();
+        string target = string.Empty;
+        if (args.Length > 0)
         {
-            Console.WriteLine("Must receive path of target pdf file to extract its content.");
+            target = args[0];
         }
+        if (target.Length > 0)
+        {
+            string json = File.ReadAllText(target);
+            DeserializePath deserializePath = JsonConvert.DeserializeObject<DeserializePath>(json) ?? new DeserializePath();
+            pdfServices.Extract(deserializePath);
+        }
+
     }
 }

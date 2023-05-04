@@ -1,16 +1,14 @@
-﻿using System.Text.Json.Serialization;
-
+﻿using iText.IO.Image;
+using System.Text.Json.Serialization;
 
 namespace PdfHelper.Models
 {
     public class DeserializePath
     {
-        public IEnumerable<FilePath> File { get; set; } = Array.Empty<FilePath>();
+        [JsonPropertyName("Name")]
+        public string Name { get; set; } = string.Empty;
+        [JsonPropertyName("ImagePathList")]
+        public IEnumerable<FilePath> ImagePathList { get; set; } = Array.Empty<FilePath>();
 
-        public DeserializePath(IEnumerable<FilePath> file)
-        {
-            File = file;
-        }
-        public DeserializePath() { }
     }
 }

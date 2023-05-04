@@ -9,46 +9,43 @@ namespace PdfHelper.Services
 {
     public class GetImageService : IExtractServices
     {
-        public void ExtractResult(DeserializePath pathFile)
+        public void ExtractResult(DeserializePath pathFile, string Folder)
         {
-            if(pathFile is not null)
+            if (pathFile is not null)
             {
-                string outputFolderPath = @".\PdfHelper\Results\Images";
-                if (!Directory.Exists(outputFolderPath))
+                string outputFolderPath = @$"{Folder}\Images";
+               
+                foreach (var pdfFilePath in pathFile.ImagePathList)
                 {
-                    Directory.CreateDirectory(outputFolderPath);
-                }
-                foreach (var pdfFilePath in pathFile.File)
-                {
-                    using (PdfDocument pdfDoc = new(new PdfReader(pdfFilePath.Path)))
+                    using PdfDocument pdfDoc = new(new PdfReader(pdfFilePath.Path));
+                    int pageCount = pdfDoc.GetNumberOfPages();
+
+                    for (int i = 1; i <= pageCount; i++)
                     {
-                        int pageCount = pdfDoc.GetNumberOfPages();
+                        PdfPage pdfPage = pdfDoc.GetPage(i);
 
-                        for (int i = 1; i <= pageCount; i++)
+                        ImageRenderListener listener = new(outputFolderPath, Path.GetFileNameWithoutExtension(pdfFilePath.Path), i);
+
+                        new PdfCanvasProcessor(listener).ProcessPageContent(pdfPage);
+
+                        IList<byte[]> extractedImages = listener.GetExtractedImages();
+
+                        foreach (byte[] imageData in extractedImages)
                         {
-                            PdfPage pdfPage = pdfDoc.GetPage(i);
-
-                            ImageRenderListener listener = new(outputFolderPath, Path.GetFileNameWithoutExtension(pdfFilePath.Path), i);
-
-                            new PdfCanvasProcessor(listener).ProcessPageContent(pdfPage);
-
-                            IList<byte[]> extractedImages = listener.GetExtractedImages();
-
-                            foreach (byte[] imageData in extractedImages)
+                            string imageName = $@"page_{i}_{Guid.NewGuid()}.jpg";
+                            if (!Directory.Exists(outputFolderPath))
                             {
-                                string imageName = $"page_{i}_{Guid.NewGuid()}.jpg";
-                                string imagePath = Path.Combine(outputFolderPath, imageName);
-
-                                using (FileStream outputStream = new(imagePath, FileMode.Create))
-                                {
-                                    outputStream.Write(imageData, 0, imageData.Length);
-                                }
+                                Directory.CreateDirectory(outputFolderPath);
                             }
+                            string imagePath = Path.Combine(outputFolderPath, imageName);
+
+                            using FileStream outputStream = new(imagePath, FileMode.Create);
+                            outputStream.Write(imageData, 0, imageData.Length);
                         }
                     }
                 }
             }
-           
+
         }
     }
 }

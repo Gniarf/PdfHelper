@@ -5,7 +5,7 @@ using PdfHelper.Services;
 
 namespace PdfHelper.Tests
 {
-    
+
     public class PdfServiceTest
     {
         [Fact]
@@ -14,17 +14,13 @@ namespace PdfHelper.Tests
             // Arrange
             var MockDeserialize = new Mock<CustomDeserializePath>(new List<FilePath> { new FilePath { Path = "C:/Users/AN/proj/test/Doctestimage.pdf" } });
 
-
-            var getImageServiceMock = new Mock<GetImageService>();
-            var getTextServiceMock = new Mock<GetTextService>();
-            var services = new List<IExtractServices> { getImageServiceMock.Object, getTextServiceMock.Object };
-
             var sut = new PdfService();
+            string folder = It.IsAny<string>();
 
             // Act
-            sut.Extract(MockDeserialize.Object);
+            sut.Extract(MockDeserialize.Object,folder);
 
-            
+
         }
         [Fact]
         public void Extract_ShouldExtractResultsUsingAllServicesInParallel()
@@ -32,18 +28,14 @@ namespace PdfHelper.Tests
             // Arrange
             var MockDeserialize = new Mock<CustomDeserializePath>(new List<FilePath> { new FilePath { Path = "C:/Users/AN/proj/test/Doctestimage.pdf" } });
 
-
-            var getImageServiceMock = new Mock<GetImageService>();
-            var getTextServiceMock = new Mock<GetTextService>();
-            var services = new List<IExtractServices> { getImageServiceMock.Object, getTextServiceMock.Object };
-
             var sut = new PdfService();
+            string folder = It.IsAny<string>();
 
             // Act
-            sut.Extract(MockDeserialize.Object);
+            sut.Extract(MockDeserialize.Object,folder);
 
-          
-            
+
+
         }
     }
 }

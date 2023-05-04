@@ -2,9 +2,9 @@
 
 namespace PdfHelper.Contracts
 {
-    public interface IpdfServices
+    public interface IPdfServices
     {
-        void Extract(DeserializePath deserialisePath);
+        void Extract(DeserializePath deserialisePath, string Folder);
 
     }
 }

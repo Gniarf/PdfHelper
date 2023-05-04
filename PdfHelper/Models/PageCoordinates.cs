@@ -9,6 +9,5 @@
         public float Y2 { get; set; }
         public float PageWidth { get; set; }
         public float PageHeight { get; set; }
-        public int PageNum { get; set; }
     }
 }

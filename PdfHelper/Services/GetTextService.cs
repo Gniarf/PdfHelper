@@ -9,16 +9,17 @@ namespace PdfHelper.Services
 {
     public class GetTextService : IExtractServices
     {
-        public void ExtractResult(DeserializePath pathFile)
+        public void ExtractResult(DeserializePath pathFile, string Folder)
         {
+            
             CustomTextRenderListener listener = new();
-           
-            if (pathFile != null)
+
+            if (pathFile.ImagePathList != null)
             {
-                var item = pathFile.File.First().Path;
+                var item = pathFile.ImagePathList.First().Path;
 
                 PdfDocument pdfDoc = new(new PdfReader(item));
-                foreach (var pdfFilePath in pathFile.File)
+                foreach (var pdfFilePath in pathFile.ImagePathList)
                 {
                     pdfDoc = new PdfDocument(new PdfReader(pdfFilePath.Path));
                     Rectangle pageSize = pdfDoc.GetPage(1).GetPageSize();
@@ -33,31 +34,29 @@ namespace PdfHelper.Services
                         PdfCanvasProcessor parser = new(listener);
                         parser.ProcessPageContent(page);
 
-                        // Add the page dimensions to the list of coordinates for each word
-                        foreach (PageCoordinates word in listener.Words)
-                        {
-                            word.PageWidth = pageSize.GetWidth();
-                            word.PageHeight = pageSize.GetHeight();
-                        }
                     }
+                    foreach (PageCoordinates word in listener.Words)
+                    {
+                        word.PageWidth = pageSize.GetWidth();
+                        word.PageHeight = pageSize.GetHeight();
+                    }
+
                 }
-           
+                    PagePdf pageC = new() { Page = listener.Words };
+               
+                // Serialize the list of words with coordinates to JSON
+                string json = JsonConvert.SerializeObject(pageC, Formatting.Indented);
+                var date = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss");
+                var FolderPath = $@"{Folder}\JsonResults";
+                string jsonFilePath = $@"{FolderPath}\resultPdf_{date}_{Guid.NewGuid()}.json";
+                if (!Directory.Exists(FolderPath))
+                {
+                    Directory.CreateDirectory(FolderPath);
+                }
+                // Write the JSON to file
+                File.WriteAllText(jsonFilePath, json);
 
-
-            // Serialize the list of words with coordinates to JSON
-            PagePdf pagePdf = new() { Page = listener.Words };
-            string json = JsonConvert.SerializeObject(pagePdf, Formatting.Indented);
-            string FileOutput= $@"PdfHelper\Results\JsonResults";
-            var date= DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss");
-            string jsonFilePath = $@".\PdfHelper\Results\JsonResults\resultPdf_{date}_{Guid.NewGuid()}.json";
-            if (!Directory.Exists(FileOutput))
-            {
-                Directory.CreateDirectory(FileOutput);
-            }
-            // Write the JSON to file
-            File.WriteAllText(jsonFilePath, json);
-
-            pdfDoc.Close();
+                pdfDoc.Close();
             }
         }
     }

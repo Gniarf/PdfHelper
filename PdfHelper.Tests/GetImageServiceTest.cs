@@ -24,10 +24,10 @@ namespace PdfHelper.Tests
         [Fact]
         public void ExtractResult_ShouldDeserializePathNotNull()
         {
-            var MockDeserialize = new Mock<CustomDeserializePath>(new List<FilePath> { new FilePath { Path = "C:/Users/AN/proj/test/Doctestimage.pdf" } });
+
             var sut = new GetImageService();
             string folder = "D:\\ResultRalevisuer\\Resultpdf";
-            sut.ExtractResultv2(It.IsAny<string>(),folder);
+            sut.ExtractResultv2(It.IsAny<string>(), folder);
 
         }
     }

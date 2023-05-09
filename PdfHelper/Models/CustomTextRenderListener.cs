@@ -16,7 +16,7 @@ namespace PdfHelper.Models
                 TextRenderInfo renderInfo = (TextRenderInfo)data;
 
                 // Loop through each character and create a WordCoordinates object for each word
-                PageCoordinates word = null;
+                PageCoordinates word = new();
                 foreach (TextRenderInfo charInfo in renderInfo.GetCharacterRenderInfos())
                 {
                     Rectangle rect = charInfo.GetBaseline().GetBoundingRectangle();

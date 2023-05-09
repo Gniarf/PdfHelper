@@ -16,16 +16,18 @@ namespace PdfHelper.Tests
         {
             // Arrange
             var sut = new GetImageService();
+            string folder = "D:\\ResultRalevisuer\\Resultpdf";
 
             // Act & Assert
-            sut.ExtractResult(null);
+            sut.ExtractResultv2(null, folder);
         }
         [Fact]
         public void ExtractResult_ShouldDeserializePathNotNull()
         {
             var MockDeserialize = new Mock<CustomDeserializePath>(new List<FilePath> { new FilePath { Path = "C:/Users/AN/proj/test/Doctestimage.pdf" } });
             var sut = new GetImageService();
-            sut.ExtractResult(MockDeserialize.Object);
+            string folder = "D:\\ResultRalevisuer\\Resultpdf";
+            sut.ExtractResultv2(It.IsAny<string>(),folder);
 
         }
     }

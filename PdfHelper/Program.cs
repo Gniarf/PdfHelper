@@ -9,9 +9,11 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        IPdfServices pdfServices = new PdfService();
-        string target = "";
-        string FolderResult= "";
+        IExtractServicesImage extractServicesImage = new GetImageService();
+        IExtractServicesText extractServicesText = new GetTextService();
+        IPdfServices pdfServices = new PdfService(extractServicesImage,extractServicesText);
+        string target = @"";
+        string FolderResult= @"";
         if (args.Length > 0)
         {
             target = args[0];

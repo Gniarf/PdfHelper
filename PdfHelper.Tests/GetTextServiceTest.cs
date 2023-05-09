@@ -1,5 +1,4 @@
 ﻿using Moq;
-using PdfHelper.Models;
 using PdfHelper.Services;
 
 namespace PdfHelper.Tests
@@ -13,14 +12,13 @@ namespace PdfHelper.Tests
             var sut = new GetTextService();
 
             // Act & Assert
-            sut.ExtractResult(null);
+            sut.ExtractResultv2("");
         }
         [Fact]
         public void ExtractResult_ShouldDeserializePathNotNull()
         {
-            var MockDeserialize = new Mock<CustomDeserializePath>(new List<FilePath> { new FilePath { Path = "C:/Users/AN/proj/test/Doctestimage.pdf" } });
             var sut = new GetTextService();
-            sut.ExtractResult(MockDeserialize.Object);
+            sut.ExtractResultv2(It.IsAny<string>());
 
         }
     }

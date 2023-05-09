@@ -7,24 +7,24 @@ using PdfHelper.Models;
 
 namespace PdfHelper.Services
 {
-    public class GetImageService : IExtractServices
+    public class GetImageService : IExtractServicesImage
     {
-        public void ExtractResult(DeserializePath pathFile, string Folder)
+
+        public void ExtractResultv2(string pathFile, string Folder)
         {
             if (pathFile is not null)
             {
                 string outputFolderPath = @$"{Folder}\Images";
-               
-                foreach (var pdfFilePath in pathFile.ImagePathList)
-                {
-                    using PdfDocument pdfDoc = new(new PdfReader(pdfFilePath.Path));
+
+                
+                    using PdfDocument pdfDoc = new(new PdfReader(pathFile));
                     int pageCount = pdfDoc.GetNumberOfPages();
 
                     for (int i = 1; i <= pageCount; i++)
                     {
                         PdfPage pdfPage = pdfDoc.GetPage(i);
 
-                        ImageRenderListener listener = new(outputFolderPath, Path.GetFileNameWithoutExtension(pdfFilePath.Path), i);
+                        ImageRenderListener listener = new(outputFolderPath, Path.GetFileNameWithoutExtension(pathFile), i);
 
                         new PdfCanvasProcessor(listener).ProcessPageContent(pdfPage);
 
@@ -43,7 +43,7 @@ namespace PdfHelper.Services
                             outputStream.Write(imageData, 0, imageData.Length);
                         }
                     }
-                }
+                
             }
 
         }

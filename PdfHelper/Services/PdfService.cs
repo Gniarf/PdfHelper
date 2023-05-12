@@ -4,6 +4,7 @@ using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using Newtonsoft.Json;
 using PdfHelper.Contracts;
 using PdfHelper.Models;
+using System.Collections.Generic;
 
 namespace PdfHelper.Services
 {
@@ -22,28 +23,34 @@ namespace PdfHelper.Services
             var file = deserialisePath.ImagePathList;
 
             List<PagePdf> pagePdfs = new();
+            List <WordData> global = new();
             foreach (var item in file)
             {
                 bool verif = EstScanPdf(item.Path);
 
                 if (!verif)
                 {
-                  PagePdf page = extractServicesText.ExtractResultv2(item.Path);
-                    pagePdfs.Add(page);
+                    List<WordData> page = extractServicesText.ExtractResultv2(item.Path);
+                    if(global.Count == 0)
+                    {
+                        global = page;
+                    }else 
+                    global.Concat(page);
                 }
                 else
                     extractServicesImage.ExtractResultv2(item.Path, Folder);
             }
-            if (pagePdfs.Count > 0)
+            if (global.Count > 0)
             {
-                string json = JsonConvert.SerializeObject(pagePdfs, Formatting.Indented);
+                PagePdf page = new() {Page=global };
+                string json = JsonConvert.SerializeObject(page, Formatting.Indented);
                 var date = DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss");
                 var FolderPath = $@"{Folder}\JsonResults";
                 string jsonFilePath = $@"{FolderPath}\resultPdf_{date}_{Guid.NewGuid()}.json";
-                if (!Directory.Exists(FolderPath))
+               /* if (!Directory.Exists(FolderPath))
                 {
                     Directory.CreateDirectory(FolderPath);
-                }
+                }*/
                 // Write the JSON to file
                 File.WriteAllText(jsonFilePath, json);
             }

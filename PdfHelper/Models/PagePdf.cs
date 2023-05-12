@@ -2,7 +2,9 @@
 {
     public class PagePdf
     {
-        public IEnumerable<PageCoordinates> Page { get; set; } = Array.Empty<PageCoordinates>();
+       
+
+        public IEnumerable<WordData> Page { get; set; } = Array.Empty<WordData>();
     }
   
 }

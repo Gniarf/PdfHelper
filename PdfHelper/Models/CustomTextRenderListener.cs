@@ -5,9 +5,9 @@ using iText.Kernel.Pdf.Canvas.Parser.Listener;
 
 namespace PdfHelper.Models
 {
-    public class CustomTextRenderListener : ITextExtractionStrategy
+    public class CustomTextRenderListener : LocationTextExtractionStrategy//ITextExtractionStrategy
     {
-        public List<PageCoordinates> Words { get; } = new List<PageCoordinates>();
+        /*public List<WordData> Words { get; } = new List<WordData>();
 
         public void EventOccurred(IEventData data, EventType type)
         {
@@ -16,7 +16,7 @@ namespace PdfHelper.Models
                 TextRenderInfo renderInfo = (TextRenderInfo)data;
 
                 // Loop through each character and create a WordCoordinates object for each word
-                PageCoordinates word = new();
+                WordData word = new();
                 foreach (TextRenderInfo charInfo in renderInfo.GetCharacterRenderInfos())
                 {
                     Rectangle rect = charInfo.GetBaseline().GetBoundingRectangle();
@@ -25,9 +25,9 @@ namespace PdfHelper.Models
                     float x2 = rect.GetX() + rect.GetWidth();
                     float y2 = rect.GetY() + rect.GetHeight();
 
-                    if (word == null)
-                    {
-                        word = new PageCoordinates
+                   *//* if (word == null)
+                    {*//*
+                        word = new WordData
                         {
                             Text = charInfo.GetText(),
                             X1 = x1,
@@ -35,13 +35,13 @@ namespace PdfHelper.Models
                             X2 = x2,
                             Y2 = y2
                         };
-                    }
-                    else
+                    //}
+                  *//*  else
                     {
                         word.Text += charInfo.GetText();
                         word.X2 = x2;
                         word.Y2 = y2;
-                    }
+                    }*//*
                 }
 
                 if (word != null)
@@ -59,6 +59,34 @@ namespace PdfHelper.Models
         public string GetResultantText()
         {
             return string.Empty;
+        }*/
+
+        private List<WordData> wordDataList = new List<WordData>();
+
+        public override void EventOccurred(IEventData data, EventType type)
+        {
+            if (type == EventType.RENDER_TEXT)
+            {
+                TextRenderInfo renderInfo = (TextRenderInfo)data;
+                LineSegment baseline = renderInfo.GetBaseline();
+                Rectangle rect = baseline.GetBoundingRectangle();
+
+                WordData wordData = new WordData
+                {
+                    Text = renderInfo.GetText(),
+                    X = rect.GetX(),
+                    Y = rect.GetY(),
+                    Width = rect.GetWidth(),
+                    Height = rect.GetHeight()
+                };
+
+                wordDataList.Add(wordData);
+            }
+        }
+
+        public List<WordData> GetWordDataList()
+        {
+            return wordDataList;
         }
     }
 }

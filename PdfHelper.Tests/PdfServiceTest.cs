@@ -19,7 +19,7 @@ namespace PdfHelper.Tests
         public void Extract_WhenDeserializePathIsNotNull()
         {
             MockGetImage.Setup(s => s.ExtractResultv2(It.IsAny<string>(), It.IsAny<string>()));
-            MockGetText.Setup(s=>s.ExtractResultv2(It.IsAny<string>())).Returns(new PagePdf() { Page= new List<WordData>() });
+            MockGetText.Setup(s=>s.ExtractResultv2(It.IsAny<string>())).Returns( new List<WordData>() );
             // Arrange
             var MockDeserialize = new DeserializePath() {ImagePathList= new List<FilePath> { new FilePath { Path = "C:/Users/AN/proj/test/Doctestimage.pdf" } },Name="test" };
             var sut = new PdfService(MockGetImage.Object,MockGetText.Object);
@@ -31,7 +31,7 @@ namespace PdfHelper.Tests
         public void Extract_WhenDeserializePathIsNull()
         {
             MockGetImage.Setup(s => s.ExtractResultv2(It.IsAny<string>(), It.IsAny<string>()));
-            MockGetText.Setup(s => s.ExtractResultv2(It.IsAny<string>())).Returns(new PagePdf() { Page = new List<WordData>() });
+            MockGetText.Setup(s => s.ExtractResultv2(It.IsAny<string>())).Returns( new List<WordData>());
             // Arrange
             var MockDeserialize = new DeserializePath() { ImagePathList = new List<FilePath> { new FilePath() }, Name = "test" };
             var sut = new PdfService(MockGetImage.Object, MockGetText.Object);

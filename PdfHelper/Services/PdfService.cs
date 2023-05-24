@@ -23,7 +23,7 @@ namespace PdfHelper.Services
             var file = deserialisePath.ImagePathList;
 
             List<PagePdf> pagePdfs = new();
-            List <WordData> global = new();
+            IEnumerable <WordData> global = new List<WordData>();
             foreach (var item in file)
             {
                 bool verif = EstScanPdf(item.Path);
@@ -31,16 +31,16 @@ namespace PdfHelper.Services
                 if (!verif)
                 {
                     List<WordData> page = extractServicesText.ExtractResultv2(item.Path);
-                    if(global.Count == 0)
+                    if(global.Count() == 0)
                     {
                         global = page;
                     }else 
-                    global.Concat(page);
+                    global= global.Concat(page);
                 }
                 else
                     extractServicesImage.ExtractResultv2(item.Path, Folder);
             }
-            if (global.Count > 0)
+            if (global.Count() > 0)
             {
                 PagePdf page = new() {Page=global };
                 string json = JsonConvert.SerializeObject(page, Formatting.Indented);

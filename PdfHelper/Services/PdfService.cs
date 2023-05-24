@@ -22,7 +22,7 @@ namespace PdfHelper.Services
         {
             var file = deserialisePath.ImagePathList;
 
-            List<PagePdf> pagePdfs = new();
+            
             IEnumerable <WordData> global = new List<WordData>();
             foreach (var item in file)
             {
